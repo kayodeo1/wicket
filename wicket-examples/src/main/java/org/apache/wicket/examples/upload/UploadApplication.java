@@ -18,6 +18,7 @@ package org.apache.wicket.examples.upload;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.examples.WicketExampleApplication;
+import org.apache.wicket.extensions.ajax.markup.html.form.upload.resumable.ResumableUploadResourceReference;
 import org.apache.wicket.markup.html.form.upload.resource.FileUploadResourceReference;
 import org.apache.wicket.markup.html.form.upload.resource.FolderUploadsFileManager;
 import org.apache.wicket.markup.html.form.upload.resource.IUploadsFileManager;
@@ -64,11 +65,16 @@ public class UploadApplication extends WicketExampleApplication
 		uploadsFileManager = new FolderUploadsFileManager(uploadFolder);
 
 		mountResource("/uploads", FileUploadResourceReference.createNewInstance(uploadsFileManager));
+		mountResource("/resumable-uploads",
+			new ResumableUploadResourceReference(uploadsFileManager)
+				.setMaxFileSize(Bytes.megabytes(200))
+				.setMaxChunkSize(Bytes.megabytes(1)));
 
 		mountPage("/index", Index.class);
 		mountPage("/multi", MultiUploadPage.class);
 		mountPage("/single", UploadPage.class);
 		mountPage("/uploadToResource", UploadToResourcePage.class);
+		mountPage("/resumableUpload", ResumableUploadPage.class);
 
 		getApplicationSettings().setUploadProgressUpdatesEnabled(true);
 	}
